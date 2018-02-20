@@ -6,6 +6,8 @@ use GuzzleHttp\ClientInterface as GuzzleClient;
 use Psr\Http\Message\ResponseInterface;
 use Moontius\LaravelSMS\Contracts\Driver;
 use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\SmsResult;
+use Moonitus\LaravelSMS\SMSException;
 
 /**
  * Driver for KavehNegar.
@@ -86,7 +88,8 @@ class KavehNegar implements Driver {
      *
      * @return boolean
      */
-    public function sendRequest(array $message): bool {
+    public function sendRequest(array $message): SmsResult {
+        $result = new SmsResult();
         try {
             $cleanMessage = [];
             $cleanMessage['receptor'] = $message['to'];
@@ -108,11 +111,20 @@ class KavehNegar implements Driver {
                 'form_params' => $cleanMessage
             ]);
         } catch (\Exception $e) {
-            report($e);
-            return false;
+            throw new SMSException($e->getMessage(), $e->getCode());
         }
 
-        return $this->response->getStatusCode() == 200;
+        if ($this->response->getStatusCode() == 200) {
+            $value = json_decode($this->response->getBody(), true);
+            $entries = $value['entries'];
+            if (!empty($entries)) {
+                $result->messageid = $response['messageid'];
+                $result->network = $response['sender'];
+                $result->cost = $response['cost'];
+                return $result;
+            }
+        }
+        throw new SMSException('unable to generate response after sending sms', $this->response->getStatusCode());
     }
 
 }

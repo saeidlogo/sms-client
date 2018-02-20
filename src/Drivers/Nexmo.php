@@ -3,13 +3,11 @@
 namespace Moontius\LaravelSMS\Drivers;
 
 use GuzzleHttp\ClientInterface as GuzzleClient;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 use Moontius\LaravelSMS\Contracts\Driver;
 use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\SmsResult;
+use Moonitus\LaravelSMS\SMSException;
 
 /**
  * Driver for Nexmo.
@@ -98,31 +96,32 @@ class Nexmo implements Driver {
      *
      * @param array $message An array containing the message.
      *
-     * @throws \Matthewbdaly\SMS\Exceptions\ClientException  Client exception.
-     * @throws \Matthewbdaly\SMS\Exceptions\ServerException  Server exception.
-     * @throws \Matthewbdaly\SMS\Exceptions\RequestException Request exception.
-     * @throws \Matthewbdaly\SMS\Exceptions\ConnectException Connect exception.
      *
-     * @return boolean
+     * @return SmsResult
      */
-    public function sendRequest(array $message): bool {
+    public function sendRequest(array $message): SmsResult {
+        $result = new SmsResult();
         try {
             $message['api_key'] = $this->apiKey;
             $message['api_secret'] = $this->apiSecret;
             $message['from'] = $this->from;
             unset($message['content']);
             $this->response = $this->client->request('POST', $this->getEndpoint() . '?' . http_build_query($message));
-        } catch (ClientException $e) {
-            throw new \Moontius\LaravelSMS\Exceptions\ClientException();
-        } catch (ServerException $e) {
-            throw new \Moontius\LaravelSMS\Exceptions\ServerException();
-        } catch (ConnectException $e) {
-            throw new \Moontius\LaravelSMS\Exceptions\ConnectException();
-        } catch (RequestException $e) {
-            throw new \Moontius\LaravelSMS\Exceptions\RequestException();
+        } catch (\Exception $e) {
+            throw new SMSException($e->getMessage(), $e->getCode());
         }
 
-        return $this->response->getStatusCode() == 200;
+        if ($this->response->getStatusCode() == 200) {
+            $value = json_decode($this->response->getBody(), true);
+
+            if ($value['messages'][0]['status'] == 0) {
+                $result->messageid = $value['messages'][0]['message-id'];
+                $result->network = $value['messages'][0]['network'];
+                $result->cost = $value['messages'][0]['message-price'];
+                return $result;
+            }
+        }
+        throw new SMSException('unable to generate response after sending sms', $this->response->getStatusCode());
     }
 
 }

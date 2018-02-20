@@ -6,6 +6,8 @@ use GuzzleHttp\ClientInterface as GuzzleClient;
 use Psr\Http\Message\ResponseInterface;
 use Moontius\LaravelSMS\Contracts\Driver;
 use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\SmsResult;
+use Moonitus\LaravelSMS\SMSException;
 
 /**
  * Driver for KavehNegar.
@@ -90,18 +92,23 @@ class Kannel implements Driver {
      *
      * @return boolean
      */
-    public function sendRequest(array $message): bool {
+    public function sendRequest(array $message): SmsResult {
+        $result = new SmsResult();
         try {
-            $end_point = $this->getEndpoint();
-            $end_point = str_replace('[to]', $message['to'], $end_point);
+            $end_point = str_replace('[to]', $message['to'], $this->getEndpoint());
             $end_point = str_replace('[text]', urlencode($message['text']), $end_point);
             $this->response = $this->client->request('GET', $end_point);
         } catch (\Exception $e) {
-            report($e);
-            return false;
+            throw new SMSException($e->getMessage(), $e->getCode());
         }
-
-        return $this->response->getStatusCode() == 202;
+        if ($this->response->getStatusCode() == 202) {
+            $value = json_decode($this->response->getBody(), true);
+            $result->messageid = '';
+            $result->network = $value['messages'][0]['network'];
+            $result->cost = 12;
+            return $result;
+        }
+        throw new SMSException('unable to generate response after sending sms', $this->response->getStatusCode());
     }
 
 }

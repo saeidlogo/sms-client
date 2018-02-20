@@ -2,8 +2,10 @@
 
 namespace Moontius\LaravelSMS\Contracts;
 
-interface Driver
-{
+use Moontius\LaravelSMS\SmsResult;
+
+interface Driver {
+
     /**
      * Get driver name.
      *
@@ -25,5 +27,5 @@ interface Driver
      *
      * @return boolean
      */
-    public function sendRequest(array $message);
+    public function sendRequest(array $message): SmsResult;
 }

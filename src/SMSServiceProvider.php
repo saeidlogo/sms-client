@@ -5,9 +5,9 @@ namespace Moontius\LaravelSMS;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Moontius\LaravelSMS\Nexmo;
-use Moontius\LaravelSMS\KavehNegar;
-use Moontius\LaravelSMS\Kannel;
+use Moontius\LaravelSMS\Drivers\Nexmo;
+use Moontius\LaravelSMS\Drivers\KavehNegar;
+use Moontius\LaravelSMS\Drivers\Kannel;
 use Moontius\LaravelSMS\Client;
 
 /**
