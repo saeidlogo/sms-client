@@ -2,7 +2,7 @@
   "name": "moontius/sms-client",
   "description": "A Laravel SMS module to enable sending SMS messages",
   "type": "library",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "keywords": [
     "sms",
     "laravel"
