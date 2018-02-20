@@ -118,6 +118,7 @@ class KavehNegar implements Driver {
             $value = json_decode($this->response->getBody(), true);
             $entries = $value['entries'];
             if (!empty($entries)) {
+                $response = $entries[0];
                 $result->messageid = $response['messageid'];
                 $result->network = $response['sender'];
                 $result->cost = $response['cost'];

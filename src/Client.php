@@ -4,7 +4,7 @@ namespace Moontius\LaravelSMS;
 
 use Moontius\LaravelSMS\Contracts\Client as ClientContract;
 use Moontius\LaravelSMS\Contracts\Driver;
-
+use Moontius\LaravelSMS\SmsResult;
 /**
  * SMS client.
  */
@@ -46,7 +46,7 @@ class Client implements ClientContract
      *
      * @return boolean
      */
-    public function send(array $msg)
+    public function send(array $msg):SmsResult
     {
         return $this->driver->sendRequest($msg);
     }
