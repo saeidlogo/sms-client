@@ -1,11 +1,11 @@
 <?php
 
-namespace Moontius\LaravelSMS;
+namespace Moontius\LaravelSMS\Drivers;
 
 use GuzzleHttp\ClientInterface as GuzzleClient;
 use Psr\Http\Message\ResponseInterface;
-use Matthewbdaly\SMS\Contracts\Driver;
-use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\Contracts\Driver;
+use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
 
 /**
  * Driver for KavehNegar.
@@ -52,7 +52,7 @@ class KavehNegar implements Driver {
             throw new DriverNotConfiguredException();
         }
         $this->apiToken = $config['api_token'];
-        $this->from = $config['from'];
+        $this->from = isset($config['from']) ? $config['from'] : null;
     }
 
     /**
@@ -90,7 +90,7 @@ class KavehNegar implements Driver {
         try {
             $cleanMessage = [];
             $cleanMessage['receptor'] = $message['to'];
-            $this->type = isset($message['type']) ? $message['type'] : 'simple';
+            $this->type = isset($message['template']) ? 'template' : 'simple';
             switch ($this->type) {
                 case 'template':
                     $cleanMessage['template'] = $message['template'];

@@ -1,0 +1,53 @@
+<?php
+
+namespace Moontius\LaravelSMS;
+
+use Moontius\LaravelSMS\Contracts\Client as ClientContract;
+use Moontius\LaravelSMS\Contracts\Driver;
+
+/**
+ * SMS client.
+ */
+class Client implements ClientContract
+{
+    /**
+     * Driver to use.
+     *
+     * @var
+     */
+    private $driver;
+
+    /**
+     * Constructor.
+     *
+     * @param Driver $driver The driver to use.
+     *
+     * @return void
+     */
+    public function __construct(Driver $driver)
+    {
+        $this->driver = $driver;
+    }
+
+    /**
+     * Get the driver name.
+     *
+     * @return string
+     */
+    public function getDriver(): string
+    {
+        return $this->driver->getDriver();
+    }
+
+    /**
+     * Send the message.
+     *
+     * @param array $msg The message array.
+     *
+     * @return boolean
+     */
+    public function send(array $msg)
+    {
+        return $this->driver->sendRequest($msg);
+    }
+}

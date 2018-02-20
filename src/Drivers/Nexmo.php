@@ -1,6 +1,6 @@
 <?php
 
-namespace Moontius\LaravelSMS;
+namespace Moontius\LaravelSMS\Drivers;
 
 use GuzzleHttp\ClientInterface as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
@@ -8,15 +8,13 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
-use Matthewbdaly\SMS\Contracts\Driver;
-use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\Contracts\Driver;
+use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
 
 /**
  * Driver for Nexmo.
  * https://developer.nexmo.com/api/sms
  */
-
-
 class Nexmo implements Driver {
 
     /**
@@ -115,13 +113,13 @@ class Nexmo implements Driver {
             unset($message['content']);
             $this->response = $this->client->request('POST', $this->getEndpoint() . '?' . http_build_query($message));
         } catch (ClientException $e) {
-            throw new \Matthewbdaly\SMS\Exceptions\ClientException();
+            throw new \Moontius\LaravelSMS\Exceptions\ClientException();
         } catch (ServerException $e) {
-            throw new \Matthewbdaly\SMS\Exceptions\ServerException();
+            throw new \Moontius\LaravelSMS\Exceptions\ServerException();
         } catch (ConnectException $e) {
-            throw new \Matthewbdaly\SMS\Exceptions\ConnectException();
+            throw new \Moontius\LaravelSMS\Exceptions\ConnectException();
         } catch (RequestException $e) {
-            throw new \Matthewbdaly\SMS\Exceptions\RequestException();
+            throw new \Moontius\LaravelSMS\Exceptions\RequestException();
         }
 
         return $this->response->getStatusCode() == 200;

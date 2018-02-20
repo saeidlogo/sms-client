@@ -1,11 +1,11 @@
 <?php
 
-namespace Moontius\LaravelSMS;
+namespace Moontius\LaravelSMS\Drivers;
 
 use GuzzleHttp\ClientInterface as GuzzleClient;
 use Psr\Http\Message\ResponseInterface;
-use Matthewbdaly\SMS\Contracts\Driver;
-use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
+use Moontius\LaravelSMS\Contracts\Driver;
+use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
 
 /**
  * Driver for KavehNegar.

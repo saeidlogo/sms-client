@@ -5,11 +5,10 @@ namespace Moontius\LaravelSMS;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Matthewbdaly\SMS\Drivers\Log as LogDriver;
 use Moontius\LaravelSMS\Nexmo;
 use Moontius\LaravelSMS\KavehNegar;
 use Moontius\LaravelSMS\Kannel;
-use Matthewbdaly\SMS\Client;
+use Moontius\LaravelSMS\Client;
 
 /**
  * Service provider for the SMS service
@@ -39,7 +38,7 @@ class SMSServiceProvider extends ServiceProvider {
             $drivers = config('sms.drivers');
             $number = $params['number'];
             $trunk = $this->find_trunk($config, $number);
-            $prefered = isset($params['prefered']) ? $params['prefered'] : $trunk['driver'];
+            $prefered = (isset($params['prefered']) && !empty($params['prefered'])) ? $params['prefered'] : $trunk['driver'];
             //TO DO handle $trunk null value
 
             $driver_config = $drivers[$prefered];
@@ -47,7 +46,6 @@ class SMSServiceProvider extends ServiceProvider {
             //config sender
             $from = null;
             $config = array();
-            $config['type'] = $type;
             $did_sender = isset($trunk['did_provider']) ? $trunk['did_provider'] : false;
             if ($did_sender) {
                 $from = isset($trunk['cli_ovesender']) ? $trunk['cli_ovesender'] : null;
@@ -81,7 +79,7 @@ class SMSServiceProvider extends ServiceProvider {
                     $driver = new Nexmo(new GuzzleClient, new GuzzleResponse, $config);
                     break;
                 case 'kannel':
-                     $username = $driver_config['username'];
+                    $username = $driver_config['username'];
                     $password = $driver_config['password'];
 
                     if (isset($trunk['username'])) {
@@ -110,15 +108,12 @@ class SMSServiceProvider extends ServiceProvider {
                     );
                     break;
                 default:
-                    $driver = new LogDriver(
-                            $app['log']
-                    );
                     break;
             }
             return new Client($driver);
         });
 
-        $this->app->bind('Matthewbdaly\SMS\Client', function ($app) {
+        $this->app->bind(Client::class, function ($app) {
             return $app['sms'];
         });
     }

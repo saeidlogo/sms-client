@@ -1,45 +1,42 @@
 {
-    "name": "moontius/sms-client",
-    "description": "A Laravel SMS module to enable sending SMS messages",
-    "type": "library",
-    "version":"1.1.0",
-    "keywords": ["sms","laravel"],
-    "require": {
-        "matthewbdaly/sms-client": "^1.0"
-    },
-    "require-dev": {
-        "orchestra/testbench": "3.5",
-        "phpunit/phpunit": "^6.3",
-        "mockery/mockery": "^0.9.9",
-        "squizlabs/php_codesniffer": "^3.1",
-        "aws/aws-sdk-php": "3.*",
-        "psy/psysh": "^0.8.11"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Saeidlogo",
-            "email": "saeid.kh@basketasia.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Moontius\\LaravelSMS\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Moontius\\LaravelSMS\\SMSServiceProvider"
-            ],
-            "aliases": {
-                "SmsClient": "Moontius\\LaravelSMS\\SmsClient"
-            }
-        }
+  "name": "moontius/sms-client",
+  "description": "A Laravel SMS module to enable sending SMS messages",
+  "type": "library",
+  "version": "1.1.1",
+  "keywords": [
+    "sms",
+    "laravel"
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.2"
+  },
+  "require-dev": {
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Saeidlogo",
+      "email": "saeid.kh@basketasia.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Moontius\\LaravelSMS\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Moontius\\LaravelSMS\\SMSServiceProvider"
+      ],
+      "aliases": {
+        "SmsClient": "Moontius\\LaravelSMS\\SmsClient"
+      }
+    }
+  }
 }
