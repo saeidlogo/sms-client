@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Moontius\LaravelSMS\Contracts\Driver;
 use Moontius\LaravelSMS\Exceptions\DriverNotConfiguredException;
 use Moontius\LaravelSMS\SmsResult;
-use Moonitus\LaravelSMS\SMSException;
+use Moontius\LaravelSMS\Exceptions\SMSException;
 
 /**
  * Driver for KavehNegar.
