@@ -118,8 +118,17 @@ class SMSServiceProvider extends ServiceProvider {
         });
     }
 
+    public function get_number($phone_enum) {
+        if (preg_match('/^\+([1-9][0-9]{1,})/i', $phone_enum, $phone)) {
+            return $phone[1];
+        } else {
+            return false;
+        }
+    }
+
     public function find_trunk($config, $mobile) {
         $routes = config('sms.route_prefix');
+        $mobile=$this->get_number($phone_enum);
         foreach ($routes as $key => $value) {
             if (preg_match('/^' . $key . '\d+/s', $mobile) == true) {
                 return config('sms.trunks.' . $value);
