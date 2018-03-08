@@ -33,11 +33,9 @@ class SMSServiceProvider extends ServiceProvider {
      */
     public function register() {
         $this->app->singleton('sms', function ($app, $params) {
-            $config = $app['config'];
-            $default = config('sms.default');
             $drivers = config('sms.drivers');
             $number = $params['number'];
-            $trunk = $this->find_trunk($config, $number);
+            $trunk = $this->find_trunk($number);
             $prefered = (isset($params['prefered']) && !empty($params['prefered'])) ? $params['prefered'] : $trunk['driver'];
             //TO DO handle $trunk null value
 
@@ -126,7 +124,7 @@ class SMSServiceProvider extends ServiceProvider {
         }
     }
 
-    public function find_trunk($config, $mobile) {
+    public function find_trunk($phone_enum) {
         $routes = config('sms.route_prefix');
         $mobile=$this->get_number($phone_enum);
         foreach ($routes as $key => $value) {
